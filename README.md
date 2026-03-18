@@ -1,4 +1,6 @@
-Web app under development that displays random quotes and coloured backgrounds with Solfeggio frequencies.
+Experimental web app under development that displays random quotes and coloured backgrounds with Solfeggio frequencies.
+
+Note: to toggle audio click on the background circle.
 
 Try it here: https://zr3d.github.io/random-affirmation/
 
