@@ -36,6 +36,7 @@ body { font-family: 'Nunito', sans-serif; font-size: 13px; padding: 0; margin: 0
             stroke:none; 
             stroke-width:0; 
             transition: fill 1s ease;
+            cursor: pointer;
            }
           .hidden{display:none;}
         </style>
@@ -47,25 +48,44 @@ body { font-family: 'Nunito', sans-serif; font-size: 13px; padding: 0; margin: 0
       <circle id="circleBackground" cx="400" cy="400" r="380" class="svg-circle" fill="#0ea5e9"></circle>
       </g>
       <g id="textLayer">
-      <text id="textLine1" x="400" y="400" class="svg-text">feel</text> 
-      <text id="textLine2" x="400" y="400" class="svg-text">peace</text>
+      <text id="textLine1" x="400" y="340" class="svg-text">click circle</text> 
+      <text id="textLine2" x="400" y="460" class="svg-text">for audio</text>
       </g>
     </svg>
     </div>
 </div>
 
 <script>
-const appData = {fillIndex:0, msgIndex:0};
+const appData = {fillIndex:0, msgIndex:0, freqIndex:0, audio:false};
 const textLine1 = document.getElementById('textLine1');
 const textLine2 = document.getElementById('textLine2');
 const circleBackground = document.getElementById('circleBackground');
-const fill = ['#123456','#561234','#125634','#C6832E','#3CC731', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ef4444', '#ec4899', '#f43f5e',];
+circleBackground.addEventListener('click', toggleAudio);
+const fill = ['#2F4760','#662646','#205C3E','#C6832E','#3CC731', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ef4444', '#ec4899', '#f43f5e',];
+const solfeggioFreqs = [396, 417, 528, 639, 741, 852, 174, 285, 963];
+
+/*
+6 Main
+396 Hz	UT	Liberating Guilt and Fear
+417 Hz	RE	Undoing Situations and Facilitating Change
+528 Hz	MI	Transformation and Miracles (DNA Repair)
+639 Hz	FA	Connecting and Relationships
+741 Hz	SOL	Expression and Solutions
+852 Hz	LA	Returning to Spiritual Order
+
+Modern expanded
+174 Hz: Relieving pain and stress.
+285 Hz: Healing tissue and organs.
+963 Hz: Awakening perfect state/pineal activation.
+*/
+
+
 const messageList = [
   'ok',
   'relaxed',
   'happy',
   'peace',
-  'content',
+  'contented',
   'tranquil',
   'free',
   'calm',
@@ -103,9 +123,10 @@ function getRandomIndex(list, lastIndex){
 
 function changeText(){
   const seconds = 4;
-  const milliseconds = seconds * 1000;
+  const duration = seconds * 1000;
   appData.msgIndex = getRandomIndex(messageList, appData.msgIndex);
-  appData.fillIndex = getRandomIndex(fill, appData.fillIndex); 
+  appData.fillIndex = getRandomIndex(fill, appData.fillIndex);
+  appData.freqIndex = getRandomIndex(solfeggioFreqs, appData.freqIndex);
   
   const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
   const message = messageList[appData.msgIndex];
@@ -122,11 +143,47 @@ function changeText(){
   }
   const fillColor = fill[appData.fillIndex];
   circleBackground.style.fill = fillColor;
-  const timeout = setTimeout(changeText, milliseconds);
+  const startTime = ctx.currentTime;
+  const frequency = solfeggioFreqs[appData.freqIndex];
+  playTone(frequency, startTime, seconds+4); 
+  const timeout = setTimeout(changeText, duration);
 }
 
+// --- Audio ---
+  
+
+  // Create the audio context
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+  // A master gain to control overall volume
+  const master = ctx.createGain();
+  master.gain.value = 0.05; // nice and gentle
+  master.connect(ctx.destination);
+
+  // Function to play a single tone with smooth fade in/out
+  function playTone(freq, startTime, duration) {
+    if(!appData.audio) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(0.8, startTime + 2); // fade in 2s
+    gain.gain.linearRampToValueAtTime(0.0, startTime + duration - 2); // fade out last 2s
+    osc.frequency.value = freq;
+    osc.type = 'triangle';
+    osc.connect(gain).connect(master);
+    osc.start(startTime);
+    osc.stop(startTime + duration);
+  }
+  
+  function toggleAudio(){
+    appData.audio = !appData.audio;
+    // Play default for feedback
+    playTone(solfeggioFreqs[0], ctx.currentTime, 8); 
+  }
+
+
 function init(){  
-  changeText();  
+  setTimeout(changeText, 4000); 
 }
 
 init();
