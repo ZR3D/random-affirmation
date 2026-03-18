@@ -4,9 +4,8 @@ Try it here: https://zr3d.github.io/random-affirmation/
 
 Screenshots
 
-![calm screenshot](images/screenshot_calm.png)
+<img src="./images/screenshot_peace.png" width="400" height="400" alt="peace screenshot">
 
-![peace screenshot](images/screenshot_peace.png)
+<img src="./images/screenshot_tranquil.png" width="400" height="400" alt="tranquil screenshot">
 
-![tranquil screenshot](images/screenshot_tranquil.png)
-
+<img src="./images/screenshot_calm.png" width="400" height="400" alt="calm screenshot">
