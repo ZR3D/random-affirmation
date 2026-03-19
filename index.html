@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <title>Random Affirmation</title>
+<link rel="icon" href="data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%221.1%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2212%22%20fill%3D%22%233a5cab%22%2F%3E%0A%20%3Cg%20fill%3D%22%23a3b8ea%22%3E%0A%20%20%3Crect%20x%3D%222.911%22%20y%3D%228.24558%22%20width%3D%2218.178%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%223.466404%22%20y%3D%2213.46446%22%20width%3D%228.178439%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%2214.47526%22%20y%3D%2213.4942%22%20width%3D%225%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%3C%2Fg%3E%0A%3C%2Fsvg%3E">
+
 <style>
 @font-face {
   font-family: 'Nunito';
@@ -54,123 +56,161 @@ body{font-family: 'Nunito', sans-serif; font-size: 13px; padding: 0; margin: 0; 
 
 <script>
 // --- Global Declarations ---
-const appData = {fillIndex:0, msgIndex:0, freqIndex:0, audio:false};
+const appData = {fillIndex:0, msgIndex:0, prefixIndex:0, freqIndex:0, audio:false};
 const textLine1 = document.getElementById('textLine1');
 const textLine2 = document.getElementById('textLine2');
 const circleBackground = document.getElementById('circleBackground');
 const fill = ['#2F4760','#662646','#205C3E','#C6832E','#3CC731', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ef4444', '#ec4899', '#f43f5e',];
 const solfeggioFreqs = [396, 417, 528, 639, 741, 852, 174, 285, 963];
+const center = {x:400, y:400};
+const lineSpacing = 60;
 const messageList = [
-  'ok',
-  'relaxed',
-  'happy',
-  'peaceful',
-  'still',
-  'contented',
-  'tranquil',
-  'free',
-  'calm',
-  'quiet',
-  'caring',
-  'present',
-  'healthy',
-  'generous',
-  'kind',
-  'accepting',
-  'forgiving',
-  'love',
-  'loving',
-  'good',
-  'released',
-  'grateful',
-  'unburdened',
-  'easy',
-  'floaty',
-  'joyful',
-  'patient',
-  'compassionate',
-  // From Chatty  
-  'settled',
-  'steady',
-  'grounded',
-  'centred',
-  'safe',
-  'supported',
-  'held',
-  'embraced',
-  'balanced',
-  'at ease',
-  //Letting go / spacious
-  'open',
-  'spacious',
-  'light',
-  'clear',
-  'flowing',
-  'expansive',
-  //Warm & emotional
-  'warm',
-  'connected',
-  'gentle',
-  'nurtured',
-  'appreciative',
-  'fulfilled',
-  'whole',
-  // Quietly uplifting
-  'bright',
-  'refreshed',
-  'renewed',
-  'uplifted',
-  'inspired',
-  'hopeful',
-  'alive',
-  'awake',
-  'energised', 
-  // Mindfulness / awareness
-  'aware',
-  'mindful',
-  'attentive',
-  'curious',
-  'receptive',
+{message:'ok', prefixes:[], suffixes:[]},
+{message:'relaxed', prefixes:[], suffixes:[]},
+{message:'happy', prefixes:[], suffixes:[]},
+{message:'peaceful', prefixes:[], suffixes:[]},
+{message:'still', prefixes:[], suffixes:[]},
+{message:'contented', prefixes:[], suffixes:[]},
+{message:'tranquil', prefixes:[], suffixes:[]},
+{message:'free', prefixes:[], suffixes:[]},
+{message:'calm', prefixes:[], suffixes:[]},
+{message:'quiet', prefixes:[], suffixes:[]},
+{message:'caring', prefixes:[], suffixes:[]},
+{message:'present', prefixes:[], suffixes:[]},
+{message:'healthy', prefixes:[], suffixes:[]},
+{message:'generous', prefixes:[], suffixes:[]},
+{message:'kind', prefixes:[], suffixes:[]},
+{message:'accepting', prefixes:[], suffixes:[]},
+{message:'forgiving', prefixes:[], suffixes:[]},
+{message:'love', prefixes:[], suffixes:[]},
+{message:'loving', prefixes:[], suffixes:[]},
+{message:'good', prefixes:[], suffixes:[]},
+{message:'released', prefixes:[], suffixes:[]},
+{message:'grateful', prefixes:[], suffixes:[]},
+{message:'unburdened', prefixes:[], suffixes:[]},
+{message:'easy', prefixes:[], suffixes:[]},
+{message:'floaty', prefixes:[], suffixes:[]},
+{message:'joyful', prefixes:[], suffixes:[]},
+{message:'patient', prefixes:[], suffixes:[]},
+// From Chatty 
+{message:'compassionate', prefixes:[], suffixes:[]},
+{message:'settled', prefixes:[], suffixes:[]},
+{message:'steady', prefixes:[], suffixes:[]},
+{message:'grounded', prefixes:[], suffixes:[]},
+{message:'centred', prefixes:[], suffixes:[]},
+{message:'safe', prefixes:[], suffixes:[]},
+{message:'supported', prefixes:[], suffixes:[]},
+{message:'held', prefixes:[], suffixes:[]},
+{message:'embraced', prefixes:[], suffixes:[]},
+{message:'balanced', prefixes:[], suffixes:[]},
+{message:'at ease', prefixes:[], suffixes:[]},
+//Letting go / spacious
+{message:'open', prefixes:[], suffixes:[]},
+{message:'spacious', prefixes:[], suffixes:[]},
+{message:'light', prefixes:[], suffixes:[]},
+{message:'clear', prefixes:[], suffixes:[]},
+{message:'flowing', prefixes:[], suffixes:[]},
+{message:'expansive', prefixes:[], suffixes:[]},
+//Warm & emotional
+{message:'warm', prefixes:[], suffixes:[]},
+{message:'connected', prefixes:[], suffixes:[]},
+{message:'gentle', prefixes:[], suffixes:[]},
+{message:'nurtured', prefixes:[], suffixes:[]},
+{message:'appreciative', prefixes:[], suffixes:[]},
+{message:'fulfilled', prefixes:[], suffixes:[]},
+{message:'whole', prefixes:[], suffixes:[]},
+// Quietly uplifting
+{message:'bright', prefixes:[], suffixes:[]},
+{message:'refreshed', prefixes:[], suffixes:[]},
+{message:'renewed', prefixes:[], suffixes:[]},
+{message:'uplifted', prefixes:[], suffixes:[]},
+{message:'inspired', prefixes:[], suffixes:[]},
+{message:'hopeful', prefixes:[], suffixes:[]},
+{message:'alive', prefixes:[], suffixes:[]},
+{message:'awake', prefixes:[], suffixes:[]},
+// Mindfulness / awareness
+{message:'energised', prefixes:[], suffixes:[]},
+{message:'aware', prefixes:[], suffixes:[]},
+{message:'mindful', prefixes:[], suffixes:[]},
+{message:'attentive', prefixes:[], suffixes:[]},
+{message:'curious', prefixes:[], suffixes:[]},
+{message:'receptive', prefixes:[], suffixes:[]},
+// Multi line
+{message:'go', prefixes:['let','letting'], suffixes:['']},
+{message:'with little', prefixes:['be content'], suffixes:[]},
+{message:'mindfulness', prefixes:['experience'], suffixes:[]},
+{message:'self harmony', prefixes:['experience'], suffixes:[]},
+{message:'with kindness', prefixes:['let go'], suffixes:['']},
+{message:'present', prefixes:['stay'], suffixes:['']},
+{message:'mindful', prefixes:['remain'], suffixes:['']},
+{message:'renewal', prefixes:['allow'], suffixes:['']},
+{message:'be hopeful', prefixes:['let yourself'], suffixes:['']},
+{message:'be here', prefixes:['choose to'], suffixes:['']},
+{message:'breath', prefixes:['notice your'], suffixes:['']},
+{message:'here', prefixes:['simply be'], suffixes:['']},
+{message:'spacious', prefixes:['just be'], suffixes:['']},
+{message:'compassion', prefixes:['open to'], suffixes:['']},
+// New
+{message:'positive', prefixes:[], suffixes:[]},
+{message:'optimistic', prefixes:[], suffixes:[]},
+{message:'thoughtful', prefixes:[], suffixes:[]},
+{message:'contemplative', prefixes:[], suffixes:[]},
 ];
-const prefixes = ['','be ','feel ','become ','being '];
+
+const prefixes = ['','be','feel','become','being'];
 
 // --- Event Listners ---
 circleBackground.addEventListener('click', toggleAudio);
 
 // --- Helper Functions ---
-function getRandomIndex(list, lastIndex){
+function getRandomIndex(list, lastIndex, uniqueOnly=true){
   // Select Random
   let index = Math.floor(Math.random() * list.length);
   // Is same as last, so add 1 and use modulus to keep in bounds of list
-  if(index === lastIndex){
+  if(index === lastIndex && uniqueOnly){
     index = (index+1) % list.length;
   }
   return index;
 }
 
+function getPrefix(){
+  const messagePrefixes = messageList[appData.msgIndex].prefixes;
+  let prefix = prefixes[appData.prefixIndex];
+  if(messagePrefixes.length>0){
+    prefix = messagePrefixes[Math.floor(Math.random() * messagePrefixes.length)];
+  }
+  return prefix; 
+}
+
 function changeText(){
-  const seconds = 4.5;
+  const seconds = 5;
   const duration = seconds * 1000;
   appData.msgIndex = getRandomIndex(messageList, appData.msgIndex);
   appData.fillIndex = getRandomIndex(fill, appData.fillIndex);
   appData.freqIndex = getRandomIndex(solfeggioFreqs, appData.freqIndex);
-  const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-  const message = messageList[appData.msgIndex];
-  const fillColor = fill[appData.fillIndex];
-  const messageData = {line1:prefix, line2:message, yline2:400+60}
+  appData.prefixIndex = getRandomIndex(prefixes, appData.prefixIndex, false);
+  //appData.msgIndex = messageList.length-1; // For testing last
+  // Prefix
+  const prefix = getPrefix();
+  // Message
+  const message = messageList[appData.msgIndex].message;
+  const messageData = {line1:prefix, line2:message, yline2:center.y+lineSpacing}
+  // Display on a single line if less than ten characters or no prefix
   if((message.length + prefix.length) <= 10 || prefix===''){
     messageData.line1 = '';
-    messageData.line2 = prefix + message;
-    messageData.yline2 = 400;
+    messageData.line2 = `${prefix} ${message}`;
+    messageData.yline2 = center.y;
   }
+  // Color
+  const fillColor = fill[appData.fillIndex];
+  // Sound
+  const frequency = solfeggioFreqs[appData.freqIndex];
+  playTone(frequency, ctx.currentTime, seconds+4);  
   // Update Dom
   textLine1.innerHTML = messageData.line1;
   textLine2.innerHTML = messageData.line2;
   textLine2.setAttribute('y', messageData.yline2); 
   circleBackground.style.fill = fillColor;
-  // Sound
-  const frequency = solfeggioFreqs[appData.freqIndex];
-  playTone(frequency, ctx.currentTime, seconds+4);
   // Loop
   const timeout = setTimeout(changeText, duration);
 }
